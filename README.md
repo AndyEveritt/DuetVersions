@@ -3,7 +3,7 @@ Commands to correlate 'apt' versions (such as 2.1.1) to Duet internal firmware n
 
 ## Installation
     cd
-    git clone https://github.com/DanalEstes/DuetVersions
+    git clone https://github.com/AndyEveritt/DuetVersions
 
 ## Run DuetVersion.sh
 
