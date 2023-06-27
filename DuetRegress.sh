@@ -14,6 +14,7 @@ printf "Currently Installed duetsoftwareframework=$DSFV\n"
 printf "Command line argument is requesting duetsoftwareframework=$1\n"
 
 SHOW="$(apt show duetsoftwareframework=$1 2>/dev/null | grep Depends | tr ',' '\n' | tr ':' '\n' | grep -v Depends )"
+SHOW_RECOMMENDS="$(apt show duetsoftwareframework=$1 2>/dev/null | grep Recommends | tr ',' '\n' | tr ':' '\n' | grep -v Recommends )"
 RRFV="$( echo "$SHOW" | grep reprap -m1 | tr ')' ' ' |cut -d' ' -f4 )"
 
 if [ ! $RRFV ]
@@ -27,7 +28,7 @@ mkdir /tmp/rrf$RRFV > /dev/null 2>&1
 cd /tmp/rrf$RRFV
 apt download reprapfirmware=$RRFV > /dev/null 2>&1
 dpkg-deb -R rep*_$RRFV*.deb . > /dev/null 2>&1
-RRFR=$( strings opt/dsf/sd/sys/D*_MB6HC.bin | grep -a version= | tail -n1 | cut -d'=' -f2 )
+RRFR=$( strings /opt/dsf/sd/firmware/D*_MB6HC.bin | grep -a version= | tail -n1 | cut -d'=' -f2 )
 rm -r /tmp/rrf$RRFV > /dev/null 2>&1
 printf "Which has associated reprapfirmware of $RRFV also known as $RRFR\n"
 printf "\n"
@@ -35,6 +36,8 @@ printf "************************************************************************
 printf "* Note: The next step will run for a while; the script is (probably) not hung.    *\n"
 printf "***********************************************************************************\n"
 DEPS=$(echo "$SHOW" |  sed 's/<\|>//g;s/(=/=/g;s/ = /=/g;s/)/ /g;s/[^ ]*999//')
+RECOMMENDS=$(echo "$SHOW_RECOMMENDS" |  sed 's/<\|>//g;s/(=/=/g;s/ = /=/g;s/)/ /g;s/[^ ]*999//')
+DEPS="$DEPS $RECOMMENDS"
 MAST="$DEPS"
 DEPL=$(echo "$DEPS" | tr ' ' '\n')
 for PACK in $DEPL
